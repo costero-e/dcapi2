@@ -208,12 +208,12 @@ h3 {
     <h3>Selecciona una imagen de tejido pulmonar y súbela para conocer de qué tumor se trata:</h3>
 
     <form  method="POST">
-        {# This hidden_tag is a CSRF security feature. #}
-        {{ form.hidden_tag() }}
-        {{ form.url.label }} {{form.url}}
+    
+        <input id="csrf_token" name="csrf_token" type="hidden" value="IjlkOTRkMmY1ZTk2NDBmNGYxYWE3OTk3MjNlMWFjNDg5NzAxNTE2ZGIi.YDzPww.wicJtM6WMPSUXEPBK16JSACj5x8">
+        <label for="url">URL</label> <input id="url" name="url" type="text" value="">
         <br>
-        {{ form.submit() }}
-        </form>
+        <input id="submit" name="submit" type="submit" value="Analyze">
+    </form>
       
       <p><strong>Nota:</strong> La imagen debe ser un archivo .jpeg o .png.</p>
 </div>
@@ -242,21 +242,3 @@ function mostrarFormulario() {
      
 </body>
 </html> 
-
-
-
-<h1>Welcome to IRIS predictions</h1>
-<h2>Please enter your flower measurements below:</h2>
-<form  method="POST">
-    {# This hidden_tag is a CSRF security feature. #}
-    {{ form.hidden_tag() }}
-    {{ form.sep_len.label }} {{form.sep_len}}
-    <br>
-    {{ form.sep_wid.label}} {{form.sep_wid}}
-    <br>
-    {{form.pet_len.label}}{{form.pet_len}}
-    <br>
-    {{form.pet_wid.label}}{{form.pet_wid}}
-    <br>
-    {{ form.submit() }}
-</form>
