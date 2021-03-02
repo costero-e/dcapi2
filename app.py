@@ -20,6 +20,7 @@ from tensorflow.keras.models import Sequential
 from PIL import Image
 import urllib.request
 import sys, getopt
+import random
 # import urllib
 
 def return_prediction(model, sample_json):
@@ -31,18 +32,11 @@ def return_prediction(model, sample_json):
     img_width = 180
     
     class_names = ['aca', 'n', 'scc']
-       
-    # pagineta_dir = tf.keras.utils.get_file('lung', origin=sample_json['pagineta'])
-    # data_dir = pathlib.Path(pagineta_dir)
     
-    # print(data_dir)
-    
-    unaimatge = sample_json['pagineta']
-   
-    data_dir = tf.keras.utils.get_file('fotolung', origin=unaimatge)
-    
+    pagineta_dir = tf.keras.utils.get_file('{:03}'.format(random.randrange(1, 10**10)),origin=sample_json['pagineta'])
+      
     img = keras.preprocessing.image.load_img(
-    data_dir, target_size=(img_height, img_width)
+    pagineta_dir, target_size=(img_height, img_width)
     )
     img_array = keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)
