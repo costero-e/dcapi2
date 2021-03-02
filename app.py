@@ -91,7 +91,7 @@ def index():
         return redirect(url_for("prediction"))
 
 
-    return render_template('home.html', form=form)
+    return render_template('dcapi2.htm', form=form)
 
 
 @app.route('/prediction')
@@ -103,7 +103,7 @@ def prediction():
 
     results = return_prediction(model=model,sample_json=content)
 
-    return render_template('prediction.html',results=results)
+    return render_template('prediction.htm',results=results)
 
 
 if __name__ == '__main__':
