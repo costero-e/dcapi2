@@ -17,7 +17,10 @@ from keras.models import load_model
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
+from PIL import Image
+import urllib.request
 import sys, getopt
+import urllib
 
 def return_prediction(model, sample_json):
     
@@ -28,6 +31,15 @@ def return_prediction(model, sample_json):
     img_width = 180
     
     class_names = ['aca', 'n', 'scc']
+       
+    # pagineta_dir = tf.keras.utils.get_file('lung', origin=sample_json['pagineta'])
+    # data_dir = pathlib.Path(pagineta_dir)
+    
+    # print(data_dir)
+    
+    unaimatge = sample_json['pagineta']
+   
+    data_dir = tf.keras.utils.get_file('fotolung', origin=unaimatge)
     
     img = keras.preprocessing.image.load_img(
     data_dir, target_size=(img_height, img_width)
@@ -38,14 +50,16 @@ def return_prediction(model, sample_json):
     predictions = model.predict(img_array)
     score = tf.nn.softmax(predictions[0])
     
-    message = print(
-     "This image most likely belongs to {} with a {:.2f} percent confidence."
-        .format(class_names[np.argmax(score)], 100 * np.max(score))
-    )
+    message = "This image most likely belongs to {} with a {:.2f} percent confidence."
+    print(message.format(class_names[np.argmax(score)], 100 * np.max(score)))
     
-    return message
+    return message.format(class_names[np.argmax(score)], 100 * np.max(score))
 
-
+def loadImage(_URL):
+    with urllib.request.urlopen(_URL) as url:
+        # pujada = keras.preprocessing.image.load_img(BytesIO(url.read()), target_size=(180, 180))
+        pujada = keras.preprocessing.image.load_img(url.read(), target_size=(180, 180))
+    return keras.preprocessing.image.img_to_array(pujada)
     
 
 app = Flask(__name__)
@@ -55,6 +69,14 @@ app.config['SECRET_KEY'] = 'someRandomKey'
 
 model = load_model("lung_2.h5")
 
+# Now create a WTForm Class
+# Lots of fields available:
+# http://wtforms.readthedocs.io/en/stable/fields.html
+class LungForm(FlaskForm):
+    pagineta = TextField('pagineta')
+
+    submit = SubmitField('Analyze')
+    
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
@@ -64,12 +86,12 @@ def index():
     if form.validate_on_submit():
         # Grab the data from the breed on the form.
 
-        session['url'] = form.url.data
+        session['pagineta'] = form.pagineta.data
 
         return redirect(url_for("prediction"))
 
 
-    return render_template('home.htm', form=form)
+    return render_template('home.html', form=form)
 
 
 @app.route('/prediction')
@@ -77,7 +99,7 @@ def prediction():
 
     content = {}
 
-    content['url'] = tf.keras.utils.get_file('lung', origin=session['url'])
+    content['pagineta'] = str(session['pagineta'])
 
     results = return_prediction(model=model,sample_json=content)
 
