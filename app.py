@@ -10,7 +10,7 @@ import PIL
 import tensorflow as tf
 import glob
 import os
-import pathlib
+# import pathlib
 
 from numpy import loadtxt
 from keras.models import load_model
@@ -20,7 +20,7 @@ from tensorflow.keras.models import Sequential
 from PIL import Image
 import urllib.request
 import sys, getopt
-import urllib
+# import urllib
 
 def return_prediction(model, sample_json):
     
