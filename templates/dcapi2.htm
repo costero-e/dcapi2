@@ -122,6 +122,29 @@ body {
 
 }
 
+.image-container {
+    float: right;
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 300px;
+}
+  
+.lung-container {
+    flex: 1 1 50%;
+    padding: 0px 1rem;
+    box-sizing: border-box;
+}
+  
+img.lung {
+    width: 100%;
+    height: auto;
+}
+  
+.caption {
+    font-size: 14px;
+    text-align: center;
+}
+
 h1 {
     color:#f1f1f1;
     font-size:100%;
@@ -148,6 +171,18 @@ h3 {
 }
 
 #formulario {
+    transition: margin-left .4s;
+    padding: 1rem;
+    display: none
+}
+
+#tipos {
+    transition: margin-left .4s;
+    padding: 1rem;
+    display: none
+}
+
+#instrucciones {
     transition: margin-left .4s;
     padding: 1rem;
     display: none
@@ -194,8 +229,9 @@ h3 {
 <div id="sidebar" class="sidebar">
     <a href="#" class="boton-cerrar" onclick="ocultar()">&times;</a>
 <ul class="menu">
+    <li><a href="#" onclick="mostrarInstrucciones()">¿Cómo funciona?</a></li>
+    <li><a href="#" onclick="mostrarTipos()">Tipos de cáncer de pulmón</a></li>
     <li><a href="#" onclick="mostrarFormulario()">Subir imagen</a></li>
-    <li><a href="#">Tipos de cáncer de pulmón</a></li>
 </ul>
   
 </div>
@@ -212,18 +248,68 @@ h3 {
 
 
 <div id ="formulario">
-    <h3>Selecciona una imagen de tejido pulmonar y súbela para conocer de qué tumor se trata:</h3>
+    <h3>Copia el enlace web de la imagen que deseas clasificar:</h3>
 
-  <form  method="POST">
+   <form  method="POST">
       {# This hidden_tag is a CSRF security feature. #}
       {{ form.hidden_tag() }}
-      {{ form.pagineta.label }} {{form.pagineta}}
+      {{ form.Enlace.label }} {{form.Enlace}}
       <br>
       {{ form.submit() }}
   </form>
       
       <p><strong>Nota:</strong> La imagen debe ser un archivo .jpeg, .jpg o .png.</p>
 </div>
+
+<div id ="tipos">
+
+    <h3>Tipos de tumor en pulmón humano analizados por DCAP-i²</h3>
+
+    <div class="image-container">
+    
+      <div class="lung-container">
+        <img class="lung" src="https://i.postimg.cc/zD9WfBCj/lungaca5.jpg" />
+        <p class="caption">Adenocarcinoma pulmonar</p>  
+      </div>
+      
+      <div class="lung-container">
+        <img class="lung" src="https://i.postimg.cc/hjmDZSXD/lungscc6.jpg" />
+        <p class="caption">Carcinoma escamoso</p>  
+      </div>
+    
+      <div class="lung-container">
+        <img class="lung" src="https://i.postimg.cc/tgZp7Xt3/lungn9.jpg" />
+        <p class="caption">Tumor benigno</p>  
+      </div>
+      
+    </div>
+    
+    
+    <p>DCAP-i² solo clasifica imágenes procedentes de alguna de las tres imágenes que tenéis en pantalla.</p>
+    
+    <p>El adenocarcinoma es un tipo de cáncer de pulmón no microcítico, cuyas células se asemejan a las células de las glándulas, tal como las glándulas que secretan moco en los pulmones. (www.cancer.org) </p>
+    
+    <p>El Carcinoma escamoso o carcinoma de células escamosas es el nombre de un tipo de cáncer de pulmón no microcítico, cuyas células se asemejan a las células planas (llamadas células escamosas) que revisten las vías respiratorias. (www.cancer.org)</p>
+    
+    <p>Más de la mitad de todos los nódulos pulmonares solitarios no son cancerosos (benignos). Los nódulos benignos tienen muchas causas, por ejemplo, cicatrices e infecciones pasadas. Los granulomas infecciosos (que son formados por células como reacción a una infección pasada) causan la mayoría de las lesiones benignas. (medlineplus.gov)</p>
+
+</div>
+
+<div id ="instrucciones">
+
+    <h3>Para utilizar el clasificador de imágenes DCAP-i², sigue los siguientes pasos:</h3>
+
+    <ol type = "1">
+        <li>Sube tu imagen a internet y copia el enlace de la imagen (debe acabar en .jpg, .jpeg o .png)</li>
+        <li>Dirígete a la pestaña "Subir imagen" dentro del menú que se desplegará a tu izquierda al apretar el botón con tres rayas</li>
+        <li>Pega el enlace de tu imagen en el espacio disponible y dale a "Clasifica"</li>
+        <li>Espera que se procese tu imagen y en unos segundos aparecerá el tipo de cáncer de pulmón y su % de fiabilidad de la respuesta</li>
+     </ol>
+      
+ 
+       
+</div>
+
 
 <div class="resultado">
     <h2>{{results}}</h2>
@@ -243,16 +329,33 @@ function ocultar() {
 }
 
 function mostrarFormulario() {
-    console.log("yeah!")
     document.getElementById("sidebar").style.width = "0";
     document.getElementById("contenido").style.marginLeft = "0";
     document.getElementById("abrir").style.display = "inline";
-    document.getElementById("formulario").style.display= "inline";
-    document.getElementById("resultado").style.display= "none";
+    document.getElementById("tipos").style.display= "none";
+    document.getElementById("formulario").style.display= "inline"
+    document.getElementById("instrucciones").style.display= "none";
+}
+
+function mostrarTipos() {
+    document.getElementById("sidebar").style.width = "0";
+    document.getElementById("contenido").style.marginLeft = "0";
+    document.getElementById("abrir").style.display = "inline";
+    document.getElementById("tipos").style.display= "inline";
+    document.getElementById("formulario").style.display= "none"
+    document.getElementById("instrucciones").style.display= "none";
+}
+
+function mostrarInstrucciones() {
+    document.getElementById("sidebar").style.width = "0";
+    document.getElementById("contenido").style.marginLeft = "0";
+    document.getElementById("abrir").style.display = "inline";
+    document.getElementById("instrucciones").style.display= "inline";
+    document.getElementById("formulario").style.display= "none";
+    document.getElementById("tipos").style.display= "none";
 }
 
 function ocultarFormulario() {
-    console.log("yeah!")
     document.getElementById("sidebar").style.width = "0";
     document.getElementById("contenido").style.marginLeft = "0";
     document.getElementById("abrir").style.display = "inline";

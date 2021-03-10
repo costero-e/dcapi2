@@ -122,6 +122,12 @@ body {
 
 }
 
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
 h1 {
     color:#f1f1f1;
     font-size:100%;
@@ -141,6 +147,13 @@ h3 {
     font-size:120%;
     font-weight:normal;
   }
+
+h4 {
+    color: black;
+    font-size:120%;
+    font-weight:normal;
+    text-align: center;
+}
 
 #contenido {
     transition: margin-left .4s;
@@ -208,11 +221,18 @@ h3 {
 </div>
 
 <form action="http://dcapi2.herokuapp.com">
-    <input type="submit" value="Return" />
+    <input type="submit" value="Volver" />
 </form>
 
 <div class="resultado">
-    <h2>{{results}}</h2>
+    <!--<img src={{imagenes}}>-->
+    <img src= "{{imagenes}}" height="180" width="180" class ="center"/>
+    <h4>{{results}}</h4>
+    
+    <h4>aca = Adenocarcinoma</h4>
+    <h4>n = tumor benigno</h4>
+    <h4>scc = Carcinoma escamoso</h4>
+
 </div>
 
 <script>

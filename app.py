@@ -33,7 +33,7 @@ def return_prediction(model, sample_json):
     
     class_names = ['aca', 'n', 'scc']
     
-    pagineta_dir = tf.keras.utils.get_file('{:03}'.format(random.randrange(1, 10**10)),origin=sample_json['pagineta'])
+    pagineta_dir = tf.keras.utils.get_file('{:03}'.format(random.randrange(1, 10**10)),origin=sample_json['Enlace'])
       
     img = keras.preprocessing.image.load_img(
     pagineta_dir, target_size=(img_height, img_width)
@@ -44,10 +44,16 @@ def return_prediction(model, sample_json):
     predictions = model.predict(img_array)
     score = tf.nn.softmax(predictions[0])
     
-    message = "This image most likely belongs to {} with a {:.2f} percent confidence."
+    message = "Esta imagen pertenece a un tumor del tipo {} con un {:.2f} por ciento de fiabilidad."
     print(message.format(class_names[np.argmax(score)], 100 * np.max(score)))
     
     return message.format(class_names[np.argmax(score)], 100 * np.max(score))
+
+def return_image(sample_json):
+    
+    enlacen_imagen = sample_json['Enlace']
+    
+    return enlacen_imagen
 
 def loadImage(_URL):
     with urllib.request.urlopen(_URL) as url:
@@ -67,9 +73,9 @@ model = load_model("lung_2.h5")
 # Lots of fields available:
 # http://wtforms.readthedocs.io/en/stable/fields.html
 class LungForm(FlaskForm):
-    pagineta = TextField('pagineta')
+    Enlace = TextField('Enlace')
 
-    submit = SubmitField('Analyze')
+    submit = SubmitField('Clasifica')
     
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -80,7 +86,7 @@ def index():
     if form.validate_on_submit():
         # Grab the data from the breed on the form.
 
-        session['pagineta'] = form.pagineta.data
+        session['Enlace'] = form.Enlace.data
 
         return redirect(url_for("prediction"))
 
@@ -93,11 +99,13 @@ def prediction():
 
     content = {}
 
-    content['pagineta'] = str(session['pagineta'])
+    content['Enlace'] = str(session['Enlace'])
 
     results = return_prediction(model=model,sample_json=content)
+    
+    imagenes = return_image(sample_json=content)
 
-    return render_template('prediction.htm',results=results)
+    return render_template('prediction.htm',results=results,imagenes=imagenes)
 
 
 if __name__ == '__main__':
