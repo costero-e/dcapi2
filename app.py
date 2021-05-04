@@ -3,6 +3,11 @@ from flask_wtf import FlaskForm
 from wtforms import TextField,SubmitField
 from wtforms.validators import NumberRange
 
+from flask import url_for, redirect, render_template
+from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
+from werkzeug.utils import secure_filename
+
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -21,9 +26,12 @@ from PIL import Image
 import urllib.request
 import sys, getopt
 import random
+# from fileinput import filename
 # import urllib
 
-def return_prediction(model, sample_json):
+filename = "unknown"
+
+def return_prediction(model):
     
     # For larger data features, you should probably write a for loop
     # That builds out this array for you
@@ -33,10 +41,13 @@ def return_prediction(model, sample_json):
     
     class_names = ['aca', 'n', 'scc']
     
-    pagineta_dir = tf.keras.utils.get_file('{:03}'.format(random.randrange(1, 10**10)),origin=sample_json['Enlace'])
-      
+    list_of_files = glob.glob('static/*') 
+    
+    latest_file = max(list_of_files, key=os.path.getctime)
+    path = os.path.abspath(latest_file)
+         
     img = keras.preprocessing.image.load_img(
-    pagineta_dir, target_size=(img_height, img_width)
+    path, target_size=(img_height, img_width)
     )
     img_array = keras.preprocessing.image.img_to_array(img)
     img_array = tf.expand_dims(img_array, 0)
@@ -49,19 +60,6 @@ def return_prediction(model, sample_json):
     
     return message.format(class_names[np.argmax(score)], 100 * np.max(score))
 
-def return_image(sample_json):
-    
-    enlacen_imagen = sample_json['Enlace']
-    
-    return enlacen_imagen
-
-def loadImage(_URL):
-    with urllib.request.urlopen(_URL) as url:
-        # pujada = keras.preprocessing.image.load_img(BytesIO(url.read()), target_size=(180, 180))
-        pujada = keras.preprocessing.image.load_img(url.read(), target_size=(180, 180))
-    return keras.preprocessing.image.img_to_array(pujada)
-    
-
 app = Flask(__name__)
 # Configure a secret SECRET_KEY
 # We will later learn much better ways to do this!!
@@ -72,40 +70,35 @@ model = load_model("lung_2.h5")
 # Now create a WTForm Class
 # Lots of fields available:
 # http://wtforms.readthedocs.io/en/stable/fields.html
-class LungForm(FlaskForm):
-    Enlace = TextField('Enlace')
-
-    submit = SubmitField('Clasifica')
+class UploadForm(FlaskForm):
+    file = FileField()
     
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
-
-    # Create instance of the form.
-    form = LungForm()
-    # If the form is valid on submission (we'll talk about validation next)
+    global filename
+    form = UploadForm()
+    
     if form.validate_on_submit():
-        # Grab the data from the breed on the form.
-
-        session['Enlace'] = form.Enlace.data
-
-        return redirect(url_for("prediction"))
-
+        filename = secure_filename(form.file.data.filename)
+        print("filename1:")
+        print(filename)
+        form.file.data.save('static/' + filename)
+        return redirect(url_for('prediction'))
 
     return render_template('dcapi2.htm', form=form)
 
 
 @app.route('/prediction')
 def prediction():
+    global filename
+    print("filename2:")
+    print(filename)
 
-    content = {}
+    results = return_prediction(model=model)
 
-    content['Enlace'] = str(session['Enlace'])
-
-    results = return_prediction(model=model,sample_json=content)
-    
-    imagenes = return_image(sample_json=content)
-
-    return render_template('prediction.htm',results=results,imagenes=imagenes)
+    return render_template('prediction.htm',results=results,imagen=filename)
 
 
 if __name__ == '__main__':

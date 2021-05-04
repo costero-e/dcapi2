@@ -226,7 +226,10 @@ h4 {
 
 <div class="resultado">
     <!--<img src={{imagenes}}>-->
-    <img src= "{{imagenes}}" height="180" width="180" class ="center"/>
+    <!--<img src="{{ imagen }}">-->
+    <img src="{{url_for('static', filename=imagen )}}" height="180" width="180" class ="center"/>
+
+
     <h4>{{results}}</h4>
     
     <h4>aca = Adenocarcinoma</h4>

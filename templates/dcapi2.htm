@@ -250,13 +250,11 @@ h3 {
 <div id ="formulario">
     <h3>Copia el enlace web de la imagen que deseas clasificar:</h3>
 
-   <form  method="POST">
-      {# This hidden_tag is a CSRF security feature. #}
-      {{ form.hidden_tag() }}
-      {{ form.Enlace.label }} {{form.Enlace}}
-      <br>
-      {{ form.submit() }}
-  </form>
+    <form method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        {{ form.file }}
+        <input type="submit">
+    </form>
       
       <p><strong>Nota:</strong> La imagen debe ser un archivo .jpeg, .jpg o .png.</p>
 </div>
