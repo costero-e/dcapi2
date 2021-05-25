@@ -121,7 +121,7 @@ def return_prediction():
     numpy_data = numpy_data.astype('float32')
     numpy_data = normalize(numpy_data)
     result_label = run_model(numpy_data)
-    model = load_model('gear_classifier_2.model')
+    model = load_model('gear_classifier_4.model')
     predictions = model.predict(numpy_data)
     score = tf.nn.softmax(predictions)
     message = "Esta imagen pertenece a un tumor del tipo {} con una precisión de {:.2f} sobre 100."
