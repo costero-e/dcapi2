@@ -50,7 +50,7 @@ def label_decoder(key):
 
 def run_model(data):
 
-    loaded_model = load_model('gear_classifier_2.model')
+    loaded_model = load_model('gear_classifier_4.model')
 
     result_array = loaded_model.predict(data).tolist()[0]
     
